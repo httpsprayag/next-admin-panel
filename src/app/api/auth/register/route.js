@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { connectDb } from "../../../../../db";
+import ConnectDb, { } from "../../../../../db";
 import User from "../../../../../models/User"
 export const GET = async (request) => {
   try {
-    await connectDb()
+    await ConnectDb()
     console.log("in Get req")
     return NextResponse.json({ message: "Success", status: 200 })
   } catch (error) {
@@ -13,7 +13,7 @@ export const GET = async (request) => {
 
 export const POST = async (request) => {
   try {
-    await connectDb()
+    await ConnectDb()
     console.log("Fetching data from Frontend in Post req....");
     const { userName, email, password } = await request.json()
     console.log({ userName, email, password })
