@@ -1,25 +1,23 @@
 import { NextResponse } from "next/server";
-import { connectDb } from "../../../../../db";
 import User from "../../../../../models/User";
-import { redirect } from "next/dist/server/api-utils";
+import { getAllUsers } from "../../../../services/User";
+import ConnectDb from "../../../../../db";
 
-connectDb()
-
-export const POST = async (request) => {
+export const POST = async (request, res) => {
   console.log("In Login Post req...")
   try {
-    await connectDb()
+    await ConnectDb()
     const { email, password } = await request.json()
     console.log("Body :", email, password);
     const existingUser = await User.findOne({ email })
-    console.log({ existingUser })
+    const allUsers = await getAllUsers()
     if (!existingUser) {
-      return NextResponse.redirect("/")
+      res.cookies("login","awdasd")
+      return NextResponse.json({ message: "Invalid Username or password", status: 400 })
     } else {
-      // redirect("/")
-      return NextResponse.json({ message: "User Logged in successfully...", status: 200 })
+      return NextResponse.json({ message: "User Logged in successfully...", status: 200 }).cookies({ "token": "t2" })
     }
   } catch (error) {
-    return new NextResponse('error in register user:', error, { status: 500 })
+    return NextResponse.json({ 'error in register user:': error, status: 500 })
   }
 } 
